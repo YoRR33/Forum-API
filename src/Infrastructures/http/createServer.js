@@ -31,7 +31,7 @@ const createServer = async (container) => {
       aud: false,
       iss: false,
       sub: false,
-      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+      maxAgeSec: parseInt(process.env.ACCESS_TOKEN_AGE, 10) || 3600,
     },
     validate: (artifacts) => ({
       isValid: true,
@@ -63,6 +63,14 @@ const createServer = async (container) => {
       options: { container },
     },
   ]);
+
+  server.route({
+    method: "GET",
+    path: "/",
+    handler: () => ({
+      value: "Hello world!",
+    }),
+  });
 
   server.ext("onPreResponse", (request, h) => {
     // mendapatkan konteks response dari request
